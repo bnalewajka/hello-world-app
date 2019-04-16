@@ -4,12 +4,20 @@ def label = "workshops-pod-${UUID.randomUUID().toString()}"
 podTemplate(label: label,
     containers: [
         containerTemplate(
+            name: 'docker',
+            image: 'docker:1.12',
+            resourceRequestMemory: '250Mi',
+            ttyEnabled: true,
+            command: 'cat'
+        ),
+        containerTemplate(
             name: 'jdk',
             image: 'openjdk:8-alpine',
             resourceRequestMemory: '250Mi',
             ttyEnabled: true,
             command: 'cat'
-        )]
+        )],
+        volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]
 ) {
   node(label) {
     stage('Assemble') {
